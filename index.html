@@ -1,48 +1,544 @@
-<!-- ... existing code ... -->
-    <script>
-        // =========================================================================
-        // !!! PENTING UNTUK GURU !!!
-        // Soal-soal di bawah ini TELAH DISESUAIKAN berdasarkan materi PDF
-        // (Kelainan Darah, Buta Warna, dan Pemuliaan Tumbuhan).
-        // `question`: Teks pertanyaan.
-        // `options`: Array berisi 4 pilihan jawaban.
-        // `correctIndex`: Index jawaban yang benar (0 untuk A, 1 for B, 2 untuk C, 3 untuk D)
-        // `points`: Skor untuk pertanyaan ini (5, 10, 15, atau 20).
-        // =========================================================================
-        const QUESTION_BANK = [
-            // --- Kategori 5 Poin (Mudah - Ingatan Dasar) ---
-            { question: "Kelainan genetik yang menyebabkan sel darah merah berbentuk seperti bulan sabit disebut...", options: ["Hemofilia", "Buta Warna", "Anemia Sel Sabit", "Thalassemia"], correctIndex: 2, points: 5 },
-            { question: "Penyakit keturunan yang menyebabkan darah sulit membeku disebut...", options: ["Anemia", "Leukemia", "Hemofilia", "Buta Warna"], correctIndex: 2, points: 5 },
-            { question: "Tes yang umum digunakan untuk mendeteksi buta warna parsial adalah...", options: ["Tes DNA", "Tes Ishihara", "Tes IQ", "Tes Rontgen"], correctIndex: 1, points: 5 },
-            { question: "Teknik persilangan untuk menggabungkan sifat-sifat terbaik dari dua tanaman disebut...", options: ["Mutasi", "Seleksi", "Hibridisasi", "Introduksi"], correctIndex: 2, points: 5 },
-            { question: "Tanaman hasil rekayasa genetika sering juga disebut sebagai organisme...", options: ["Mutan", "Hibrida", "Unggul", "Transgenik (GMO)"], correctIndex: 3, points: 5 },
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA Interaktif - Genetika & Bioteknologi</title>
+    <!-- 1. Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Memuat Tone.js untuk efek suara -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    
+    <!-- 3. Memuat Canvas-Confetti untuk efek perayaan -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* Font kustom untuk tampilan yang lebih menarik */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Mencegah scroll aneh */
+        }
 
-            // --- Kategori 10 Poin (Sedang - Pemahaman Konsep) ---
-            { question: "Pola pewarisan kelainan Anemia Sel Sabit adalah...", options: ["Autosom Dominan", "Autosom Resesif", "Terpaut Seks (X-linked)", "Terpaut Seks (Y-linked)"], correctIndex: 1, points: 10 },
-            { question: "Hemofilia dan Buta Warna lebih banyak diderita oleh pria karena polanya...", options: ["Autosom Resesif", "Terpaut Kromosom X (X-linked)", "Selalu diwariskan dari Ayah", "Autosom Dominan"], correctIndex: 1, points: 10 },
-            { question: "Teknik memindahkan varietas tanaman dari satu tempat ke tempat lain untuk dibudidayakan disebut...", options: ["Introduksi", "Seleksi Massa", "Hibridisasi", "Mutasi"], correctIndex: 0, points: 10 },
-            { question: "Tujuan utama dari semua kegiatan pemuliaan tumbuhan adalah untuk menghasilkan...", options: ["Tanaman yang langka", "Varietas unggul", "Tanaman yang mahal", "Pestisida alami"], correctIndex: 1, points: 10 },
-            { question: "Penggunaan radiasi atau zat kimia untuk sengaja menciptakan varietas baru pada tanaman disebut teknik...", options: ["Mutasi Buatan", "DNA Rekombinan", "Poliploidisasi", "Seleksi Alam"], correctIndex: 0, points: 10 },
-            { question: "Layanan yang membantu keluarga memahami risiko dan dampak kelainan genetik disebut...", options: ["Tes DNA", "Konseling Genetika", "Psikologi Klinis", "Tes Prenatal"], correctIndex: 1, points: 10 },
-            { question: "Seseorang yang tidak bisa membedakan warna sama sekali (hanya hitam-putih) disebut...", options: ["Buta Warna Parsial", "Buta Warna Total", "Hemofilia", "Carrier Buta Warna"], correctIndex: 1, points: 10 },
+        /* Canvas untuk konfeti agar tampil di atas segalanya */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Biar bisa klik tembus */
+            z-index: 100;
+        }
 
-            // --- Kategori 15 Poin (Sulit - Analisis) ---
-            { question: "Individu yang heterozigot (pembawa sifat) Anemia Sel Sabit ternyata memiliki keuntungan resisten terhadap penyakit...", options: ["TBC", "Malaria", "Demam Berdarah", "HIV"], correctIndex: 1, points: 15 },
-            { question: "Jika seorang wanita carrier hemofilia (XhX) menikah dengan pria normal (XY), berapa persen kemungkinan anak laki-lakinya menderita hemofilia?", options: ["0%", "25%", "50%", "100%"], correctIndex: 2, points: 15 },
-            { question: "Teknik menggandakan set kromosom (misal dari 2n menjadi 4n) untuk menghasilkan tanaman lebih besar disebut...", options: ["Mutasi Titik", "Poliploidisasi", "Hibridisasi", "Kloning"], correctIndex: 1, points: 15 },
-            { question: "Contoh tanaman transgenik terkenal yang disisipi gen untuk menghasilkan Vitamin A adalah...", options: ["Jagung BT", "Kapas Anti-Hama", "Beras Emas (Golden Rice)", "Semangka Tanpa Biji"], correctIndex: 2, points: 15 },
-            { question: "Jika seorang pria buta warna (XcbY) menikah dengan wanita normal homozigot (XX), bagaimana kondisi anak perempuannya?", options: ["Semua buta warna", "50% carrier", "Semua carrier (pembawa sifat)", "Semua normal (bukan carrier)"], correctIndex: 2, points: 15 },
-            { question: "Mengapa pria tidak pernah bisa menjadi 'carrier' (pembawa sifat) untuk kelainan X-linked resesif seperti hemofilia?", options: ["Karena pria lebih kuat", "Karena pria hanya punya satu kromosom X", "Karena kelainan itu hanya dari ibu", "Karena kromosom Y melindungi"], correctIndex: 1, points: 15 },
+        /* Animasi untuk modal */
+        .modal {
+            display: none; /* Sembunyi secara default */
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .modal.flex {
+            display: flex;
+        }
+        .modal.flex .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Gradien warna-warni untuk kotak soal */
+        .gradient-1 { background-image: linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%); }
+        .gradient-2 { background-image: linear-gradient(to right, #f6d365 0%, #fda085 100%); }
+        .gradient-3 { background-image: linear-gradient(to right, #00dbde 0%, #fc00ff 100%); }
+        .gradient-4 { background-image: linear-gradient(to right, #84fab0 0%, #8fd3f4 100%); }
+        .gradient-5 { background-image: linear-gradient(to right, #a1c4fd 0%, #c2e9fb 100%); }
+        .gradient-6 { background-image: linear-gradient(to right, #d4fc79 0%, #96e6a1 100%); }
+        .gradient-7 { background-image: linear-gradient(to right, #f093fb 0%, #f5576c 100%); }
+        .gradient-8 { background-image: linear-gradient(to right, #08AEEA 0%, #2AF598 100%); }
+        .gradient-9 { background-image: linear-gradient(to right, #F4D03F 0%, #16A085 100%); }
+
+        /* Style untuk tombol pilihan jawaban */
+        .option-button {
+            transition: all 0.2s ease;
+        }
+        .option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Tampilan kotak soal setelah dijawab */
+        .game-square:disabled {
+            opacity: 1 !important;
+            cursor: not-allowed;
+        }
+        .game-square:disabled.answered-x {
+            background: #ef4444 !important; /* Merah untuk X */
+            color: white;
+            font-size: 4rem;
+            line-height: 1;
+        }
+        .game-square:disabled.answered-o {
+            background: #3b82f6 !important; /* Biru untuk O */
+            color: white;
+            font-size: 4rem;
+            line-height: 1;
+        }
+        .game-square:disabled.answered-wrong {
+            background: #6b7280 !important; /* Abu-abu */
+            color: white;
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Canvas untuk Konfeti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ===== LAYAR PENGATURAN (SETUP) ===== -->
+    <div id="setupScreen" class="w-full max-w-md bg-white text-gray-900 rounded-xl shadow-2xl p-8 text-center">
+        <h1 class="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+            Kuis IPA Interaktif
+        </h1>
+        <p class="text-gray-600 mb-6">Genetika & Bioteknologi Tumbuhan</p>
+        
+        <!-- PERUBAHAN DI SINI: Menambahkan kalimat selamat datang -->
+        <p class="text-lg font-semibold text-gray-700 mb-6">
+            Selamat datang kelas 9 Independent di kelas IPA bu Wiwik!
+        </p>
+        
+        <div class="space-y-4">
+            <div>
+                <label for="teamXName" class="block text-left font-semibold text-red-500 mb-1">Nama Tim X</label>
+                <input type="text" id="teamXName" value="Tim X" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400">
+            </div>
+            <div>
+                <label for="teamOName" class="block text-left font-semibold text-blue-500 mb-1">Nama Tim O</label>
+                <input type="text" id="teamOName" value="Tim O" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            <div>
+                <label for="boardSize" class="block text-left font-semibold text-gray-700 mb-1">Pilih Jumlah Soal</label>
+                <select id="boardSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    <option value="9">9 Kotak (3x3)</option>
+                    <option value="16" selected>16 Kotak (4x4)</option>
+                    <option value="25">25 Kotak (5x5)</option>
+                </select>
+            </div>
+        </div>
+        
+        <button id="startGameButton" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg mt-8 transition duration-300 transform hover:scale-105">
+            Mulai Bermain!
+        </button>
+    </div>
+
+    <!-- ===== LAYAR PERMAINAN (GAME) ===== -->
+    <div id="gameScreen" class="hidden w-full max-w-5xl mx-auto">
+        <!-- Header Skor -->
+        <div class="flex justify-between items-center mb-6 px-2">
+            <!-- Skor Tim X -->
+            <div id="teamXDisplay" class="bg-red-600 p-4 rounded-lg shadow-lg text-center w-1/3">
+                <h2 id="teamXNameDisplay" class="text-xl font-bold truncate">Tim X</h2>
+                <p id="teamXScoreDisplay" class="text-4xl font-black">0</p>
+            </div>
             
-            // --- Kategori 20 Poin (Sangat Sulit - Sintesis) ---
-            { question: "Anemia Sel Sabit disebabkan oleh perubahan satu basa nitrogen pada gen, yang merupakan contoh dari...", options: ["Mutasi Kromosom", "Poliploidi", "Mutasi Titik (Gen)", "Hibridisasi"], correctIndex: 2, points: 20 },
-            { question: "Metode seleksi tanaman dimana biji dari tanaman-tanaman terbaik dicampur untuk penanaman berikutnya disebut...", options: ["Seleksi Individu", "Seleksi Massa", "Introduksi", "Kloning"], correctIndex: 1, points: 20 },
-            { question: "Tahapan dasar dalam rekayasa genetika untuk menghasilkan 'Beras Emas' menggunakan teknologi...", options: ["DNA Rekombinan", "Mutasi Radiasi", "Seleksi Hibrida", "Poliploidisasi"], correctIndex: 0, points: 20 },
-            { question: "Seseorang dengan genotip heterozigot untuk Anemia Sel Sabit (HbA HbS) menunjukkan... ", options: ["Pola dominan penuh", "Pola resesif penuh", "Resistensi malaria (Keuntungan Heterozigot)", "Buta warna total"], correctIndex: 2, points: 20 },
-            { question: "Seorang wanita normal (ayahnya buta warna) menikah dengan pria buta warna. Berapa persen kemungkinan anak perempuan mereka buta warna?", options: ["0%", "25%", "50%", "75%"], correctIndex: 2, points: 20 },
-            { question: "Apa perbedaan utama antara pemuliaan tradisional (Hibridisasi) dengan Rekayasa Genetika (GMO)?", options: ["GMO lebih alami", "Hibridisasi lebih cepat", "GMO memindahkan gen spesifik, Hibridisasi mencampur semua gen", "Hibridisasi menggunakan radiasi"], correctIndex: 2, points: 20 },
-            { question: "Manakah dari berikut ini yang merupakan fokus utama dari Konseling Genetika?", options: ["Memberi obat kelainan genetik", "Memaksa keluarga mengambil keputusan", "Memberi informasi risiko dan dampak psikologis", "Melakukan operasi pada gen"], correctIndex: 2, points: 20 }
+            <!-- Info Giliran -->
+            <div class="text-center w-1/3">
+                <h3 class="text-lg font-semibold">Giliran:</h3>
+                <p id="turnDisplay" class="text-3xl font-bold text-red-300">Tim X</p>
+            </div>
+            
+            <!-- Skor Tim O -->
+            <div id="teamODisplay" class="bg-blue-600 p-4 rounded-lg shadow-lg text-center w-1/3">
+                <h2 id="teamONameDisplay" class="text-xl font-bold truncate">Tim O</h2>
+                <p id="teamOScoreDisplay" class="text-4xl font-black">0</p>
+            </div>
+        </div>
+
+        <!-- Papan Permainan -->
+        <div id="gameBoard" class="grid gap-3 p-3 bg-gray-800 rounded-xl shadow-inner">
+            <!-- Kotak-kotak soal akan di-generate oleh JavaScript -->
+        </div>
+    </div>
+
+    <!-- ===== MODAL PERTANYAAN ===== -->
+    <div id="questionModal" class="modal fixed inset-0 bg-black bg-opacity-75 items-center justify-center p-4 z-50">
+        <div class="modal-content bg-white text-gray-900 rounded-2xl shadow-xl w-full max-w-2xl p-6 mx-auto">
+            <div id="questionPoints" class="text-center text-lg font-semibold text-purple-600 mb-2">
+                Tantangan 10 Poin
+            </div>
+            <h2 id="questionText" class="text-2xl font-bold text-center mb-6">
+                Ini adalah isi pertanyaannya?
+            </h2>
+            <div id="answerOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Pilihan jawaban akan di-generate oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- ===== MODAL UMPAN BALIK (FEEDBACK) ===== -->
+    <div id="feedbackModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-50">
+        <div class="modal-content bg-white text-gray-900 rounded-2xl shadow-xl w-full max-w-sm p-8 text-center">
+            <div id="feedbackEmoji" class="text-8xl mb-4">✅</div>
+            <h2 id="feedbackText" class="text-3xl font-bold mb-4">Benar!</h2>
+            <!-- Elemen baru untuk Penjelasan -->
+            <p id="feedbackExplanation" class="text-sm text-gray-600 mb-6 px-2 whitespace-pre-line">
+                <!-- Penjelasan akan diisi oleh JavaScript -->
+            </p>
+            <button id="nextTurnButton" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                Lanjut
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- Inisialisasi Elemen DOM ---
+        const setupScreen = document.getElementById('setupScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const gameBoard = document.getElementById('gameBoard');
+        const startGameButton = document.getElementById('startGameButton');
+        
+        // Elemen Skor & Info
+        const teamXNameDisplay = document.getElementById('teamXNameDisplay');
+        const teamXScoreDisplay = document.getElementById('teamXScoreDisplay');
+        const teamONameDisplay = document.getElementById('teamONameDisplay');
+        const teamOScoreDisplay = document.getElementById('teamOScoreDisplay');
+        const turnDisplay = document.getElementById('turnDisplay');
+        
+        // Modal Pertanyaan
+        const questionModal = document.getElementById('questionModal');
+        const questionPoints = document.getElementById('questionPoints');
+        const questionText = document.getElementById('questionText');
+        const answerOptions = document.getElementById('answerOptions');
+        
+        // Modal Feedback
+        const feedbackModal = document.getElementById('feedbackModal');
+        const feedbackEmoji = document.getElementById('feedbackEmoji');
+        const feedbackText = document.getElementById('feedbackText');
+        const nextTurnButton = document.getElementById('nextTurnButton');
+
+        // --- Inisialisasi Audio (Tone.js) ---
+        // Suara "Ding" untuk jawaban benar
+        const correctSound = new Tone.Synth({
+            oscillator: { type: 'sine' },
+            envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.1 }
+        }).toDestination();
+        
+        // Suara "Dizz" untuk jawaban salah
+        const wrongSound = new Tone.NoiseSynth({
+            noise: { type: 'brown' },
+            envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 }
+        }).toDestination();
+
+        // --- Inisialisasi Konfeti ---
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const myConfetti = confetti.create(confettiCanvas, {
+            resize: true,
+            useWorker: true
+        });
+
+        // --- Bank Soal (Berdasarkan PDF) ---
+        // Dibuat 25 soal untuk mengisi papan terbesar (5x5)
+        const allQuestions = [
+            // 5 Poin (Mudah - Ingatan)
+            { q: "Tes yang umum digunakan untuk mendeteksi buta warna adalah...", o: ["Tes Ishihara", "Tes DNA", "Tes Golongan Darah", "Tes Rontgen"], a: "Tes Ishihara", p: 5, e: "Tes Ishihara menggunakan plat dengan titik-titik berwarna yang membentuk angka atau pola, yang sulit dilihat oleh penderita buta warna merah-hijau." },
+            { q: "Penyakit kelainan darah di mana darah sulit membeku disebut...", o: ["Anemia", "Leukemia", "Hemofilia", "Talasemia"], a: "Hemofilia", p: 5, e: "Hemofilia adalah kelainan genetik yang menyebabkan tubuh kekurangan faktor pembekuan darah (seperti Faktor VIII atau IX)." },
+            { q: "Tujuan utama dari pemuliaan tanaman adalah menghasilkan...", o: ["Tanaman langka", "Varietas unggul", "Tanaman hias", "Obat herbal"], a: "Varietas unggul", p: 5, e: "Varietas unggul berarti tanaman dengan sifat-sifat yang lebih baik, seperti hasil panen tinggi, tahan hama, atau rasa lebih enak." },
+            { q: "GMO adalah singkatan dari...", o: ["Genetic Mutation Order", "Genetically Modified Organism", "General Motoric Object", "Growth Medium Organ"], a: "Genetically Modified Organism", p: 5, e: "GMO (Organisme Hasil Rekayasa Genetika) adalah organisme yang materi genetiknya telah diubah menggunakan teknik rekayasa." },
+            { q: "Contoh tanaman transgenik yang direkayasa untuk menghasilkan beta-karoten (Vitamin A) adalah...", o: ["Padi Kapas", "Jagung Manis", "Tomat Ungu", "Beras Emas (Golden Rice)"], a: "Beras Emas (Golden Rice)", p: 5, e: "Golden Rice (Beras Emas) disisipi gen dari jagung dan bakteri untuk memproduksi beta-karoten, yang diubah tubuh jadi Vitamin A." },
+
+            // 10 Poin (Sedang - Pemahaman)
+            { q: "Anemia sel sabit disebabkan oleh mutasi gen yang bersifat...", o: ["Dominan", "Resesif", "Intermediet", "Kodominan"], a: "Resesif", p: 10, e: "Penyakit ini bersifat autosom resesif, artinya seseorang harus mewarisi dua salinan gen (ss) untuk menderita penyakit ini." },
+            { q: "Mengapa hemofilia dan buta warna lebih banyak diderita oleh laki-laki?", o: ["Karena terpaut kromosom Y", "Karena laki-laki lebih lemah", "Karena terpaut kromosom X", "Karena faktor makanan"], a: "Karena terpaut kromosom X", p: 10, e: "Kelainan ini terpaut kromosom X resesif. Laki-laki (XY) hanya punya satu X, jadi jika X itu membawa gen resesif, ia akan langsung menderita." },
+            { q: "Teknik persilangan dua individu yang memiliki sifat beda untuk menggabungkan sifat terbaik disebut...", o: ["Mutasi", "Seleksi", "Hibridisasi", "Introduksi"], a: "Hibridisasi", p: 10, e: "Hibridisasi (persilangan) adalah cara klasik dalam pemuliaan untuk mengkombinasikan sifat-sifat unggul dari kedua tetua." },
+            { q: "Apa yang dimaksud dengan poliploidisasi dalam pemuliaan tanaman?", o: ["Penyisipan gen baru", "Pemotongan DNA", "Penggandaan set kromosom", "Penghilangan kromosom"], a: "Penggandaan set kromosom", p: 10, e: "Poliploidisasi adalah kondisi di mana sel memiliki lebih dari dua set kromosom (misal 3n, 4n). Ini sering menghasilkan tanaman lebih besar atau buah tanpa biji." },
+            { q: "Memasukkan varietas tanaman dari tempat lain ke suatu daerah baru disebut teknik...", o: ["Introduksi", "Mutasi", "Hibridisasi", "Seleksi Massa"], a: "Introduksi", p: 10, e: "Introduksi adalah membawa masuk jenis tanaman yang sebelumnya tidak ada di wilayah tersebut untuk dibudidayakan." },
+            { q: "Penyakit Anemia Sel Sabit (Sickle Cell) memiliki pola pewarisan...", o: ["Autosom Resesif", "Autosom Dominan", "Terpaut X Resesif", "Terpaut Y"], a: "Autosom Resesif", p: 10, e: "Penyakit ini diwariskan melalui kromosom tubuh (autosom) dan bersifat resesif. Penderita memiliki genotipe 'ss'." },
+            { q: "Apa itu konseling genetika?", o: ["Terapi untuk menyembuhkan kelainan genetik", "Proses memberi nasihat tentang risiko kelainan genetik", "Operasi pengubah gen", "Proses membuat tanaman unggul"], a: "Proses memberi nasihat tentang risiko kelainan genetik", p: 10, e: "Konseling genetika membantu keluarga memahami risiko penyakit turunan dan membuat keputusan terkait tes genetik atau perencanaan keluarga." },
+
+            // 15 Poin (Sulit - Analisis)
+            { q: "Individu yang heterozigot untuk anemia sel sabit (pembawa sifat) diketahui resisten terhadap penyakit...", o: ["TBC", "Malaria", "Demam Berdarah", "Flu Burung"], a: "Malaria", p: 15, e: "Individu heterozigot (Ss) atau 'carrier' memiliki 'keuntungan heterozigot' karena sel sabitnya yang sedikit menghambat parasit malaria." },
+            { q: "Pemuliaan tanaman yang menggunakan radiasi atau zat kimia untuk menciptakan variasi baru disebut pemuliaan...", o: ["Hibridisasi", "Mutasi Buatan", "Seleksi Alam", "Kultur Jaringan"], a: "Mutasi Buatan", p: 15, e: "Pemuliaan mutasi menggunakan mutagen (seperti radiasi gamma) untuk mengubah DNA secara acak, menciptakan keragaman genetik baru." },
+            { q: "Metode seleksi di mana petani memilih tanaman terbaik berdasarkan fenotipnya secara berkelompok disebut...", o: ["Seleksi Individu", "Seleksi Massa", "Seleksi Hibrida", "Introduksi"], a: "Seleksi Massa", p: 15, e: "Seleksi massa memilih tanaman berdasarkan penampilannya (fenotipe) dalam satu populasi besar. Benih dari yang terbaik dicampur untuk musim tanam berikutnya." },
+            { q: "Buta warna total (Akromasi) berarti seseorang tidak bisa melihat warna...", o: ["Merah dan Hijau", "Biru dan Kuning", "Hanya satu warna", "Semua warna (hitam-putih)"], a: "Semua warna (hitam-putih)", p: 15, e: "Buta warna total (akromasi) sangat jarang terjadi, disebabkan oleh tidak berfungsinya semua sel kerucut di mata, sehingga penglihatan hanya hitam-putih-abu." },
+            { q: "Teknologi DNA rekombinan adalah dasar dari...", o: ["Pemuliaan tradisional", "Seleksi massa", "Hibridisasi", "Rekayasa Genetika (GMO)"], a: "Rekayasa Genetika (GMO)", p: 15, e: "DNA rekombinan adalah teknik 'gunting-tempel' gen, yaitu menggabungkan DNA dari sumber berbeda, yang merupakan inti dari pembuatan GMO." },
+            { q: "Hemofilia tipe A disebabkan oleh kekurangan faktor pembekuan...", o: ["Faktor VIII", "Faktor IX", "Faktor X", "Faktor V"], a: "Faktor VIII", p: 15, e: "Hemofilia A (paling umum) disebabkan kekurangan Faktor VIII, sedangkan Hemofilia B disebabkan kekurangan Faktor IX." },
+            { q: "Perbedaan utama antara seleksi massa dan seleksi individual adalah...", o: ["Sumber tanaman", "Jumlah sifat yang dipilih", "Cara panen", "Unit seleksi (kelompok vs per tanaman)"], a: "Unit seleksi (kelompok vs per tanaman)", p: 15, e: "Seleksi massa memilih kelompok tanaman terbaik. Seleksi individual (galur murni) memilih satu tanaman terbaik dan menguji keturunannya secara terpisah." },
+            
+            // 20 Poin (Sangat Sulit - Aplikasi/Studi Kasus)
+            { q: "Seorang ayah normal (XY) menikah dengan ibu pembawa sifat (carrier) buta warna (XXc). Berapa persentase kemungkinan anak laki-laki mereka menderita buta warna?", o: ["0%", "25%", "50%", "100%"], a: "50%", p: 20, e: "Anak laki-laki mendapat Y dari ayah dan X dari ibu. Ibu (XXc) punya 50% kemungkinan memberikan Xc (buta warna) dan 50% memberikan X (normal)." },
+            { q: "Jika seorang wanita penderita hemofilia (XhXh) menikah dengan pria normal (XY), bagaimana kondisi anak laki-lakinya?", o: ["Semua normal", "Semua penderita hemofilia", "50% normal, 50% penderita", "Semua pembawa sifat (carrier)"], a: "Semua penderita hemofilia", p: 20, e: "Anak laki-laki (XY) mendapat Y dari ayah dan X dari ibu. Karena ibu (XhXh) pasti memberikan Xh, semua anak laki-lakinya akan menderita (XhY)." },
+            { q: "Petani ingin membuat semangka tanpa biji. Teknik pemuliaan modern yang paling mungkin digunakan adalah...", o: ["Hibridisasi", "Seleksi", "Mutasi", "Poliploidisasi"], a: "Poliploidisasi", p: 20, e: "Semangka tanpa biji adalah triploid (3n), dibuat dengan menyilangkan semangka tetraploid (4n) dengan diploid (2n). Ini adalah hasil dari poliploidisasi." },
+            { q: "Seorang ayah penderita anemia sel sabit (ss) menikah dengan ibu normal (SS). Bagaimana genotipe semua anak mereka?", o: ["100% SS (Normal)", "100% Ss (Pembawa Sifat)", "100% ss (Penderita)", "50% SS dan 50% Ss"], a: "100% Ss (Pembawa Sifat)", p: 20, e: "Ayah (ss) hanya bisa memberi gen 's'. Ibu (SS) hanya bisa memberi gen 'S'. Semua anak mereka pasti akan memiliki genotipe 'Ss' (Pembawa Sifat/Carrier)." },
+            { q: "Seorang pria buta warna (XcY) menikah dengan wanita normal homozigot (XX). Bagaimana kondisi anak perempuan mereka?", o: ["Semua normal (XX)", "Semua pembawa sifat (XXc)", "50% normal, 50% pembawa sifat", "Semua buta warna (XcXc)"], a: "Semua pembawa sifat (XXc)", p: 20, e: "Anak perempuan (XX) mendapat satu X dari ayah dan satu X dari ibu. Ayah (XcY) pasti memberi Xc. Ibu (XX) pasti memberi X. Semua anak perempuan akan (XXc)." },
         ];
 
-        // --- Variabel Global Permainan ---
-<!-- ... existing code ... -->
+        // --- Variabel Status Permainan ---
+        let gameState = {
+            teamXName: "Tim X",
+            teamOName: "Tim O",
+            teamXScore: 0,
+            teamOScore: 0,
+            currentTurn: 'X', // 'X' atau 'O'
+            questionsRemaining: 0,
+            boardQuestions: [] // Soal yang akan dipakai di papan
+        };
+
+        let currentQuestion = null; // Menyimpan soal yang sedang aktif
+        let currentButton = null; // Menyimpan tombol yang diklik
+
+        // --- Fungsi-Fungsi Permainan ---
+
+        // 1. Fungsi untuk mengacak array (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 2. Fungsi untuk mendapatkan gradien acak (untuk pewarnaan)
+        const gradients = [
+            'gradient-1', 'gradient-2', 'gradient-3', 'gradient-4', 'gradient-5', 
+            'gradient-6', 'gradient-7', 'gradient-8', 'gradient-9'
+        ];
+        
+        function getRandomGradient() {
+            return gradients[Math.floor(Math.random() * gradients.length)];
+        }
+
+        // 3. Fungsi Memulai Permainan
+        startGameButton.addEventListener('click', () => {
+            // Ambil data dari setup
+            gameState.teamXName = document.getElementById('teamXName').value || "Tim X";
+            gameState.teamOName = document.getElementById('teamOName').value || "Tim O";
+            const boardSize = parseInt(document.getElementById('boardSize').value);
+            gameState.questionsRemaining = boardSize;
+            
+            // Reset skor
+            gameState.teamXScore = 0;
+            gameState.teamOScore = 0;
+            gameState.currentTurn = 'X';
+
+            // Update tampilan skor
+            teamXNameDisplay.textContent = gameState.teamXName;
+            teamONameDisplay.textContent = gameState.teamOName;
+            updateScoreboard();
+
+            // Buat papan permainan
+            createGameBoard(boardSize);
+            
+            // Tampilkan layar permainan, sembunyikan setup
+            setupScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+        });
+
+        // 4. Fungsi Membuat Papan Permainan
+        function createGameBoard(size) {
+            gameBoard.innerHTML = ''; // Kosongkan papan
+            let cols = 'grid-cols-3'; // Default 3x3
+            if (size === 16) cols = 'grid-cols-4';
+            if (size === 25) cols = 'grid-cols-5';
+            gameBoard.className = `grid ${cols} gap-3 p-3 bg-gray-800 rounded-xl shadow-inner`;
+            
+            // Ambil soal acak sebanyak 'size'
+            gameState.boardQuestions = shuffle([...allQuestions]).slice(0, size);
+            
+            // Buat tombol untuk setiap soal
+            gameState.boardQuestions.forEach((q, index) => {
+                const square = document.createElement('button');
+                square.className = `game-square h-24 md:h-32 text-white font-black text-2xl md:text-3xl rounded-lg shadow-md focus:outline-none transition transform hover:scale-105 ${getRandomGradient()}`;
+                square.textContent = `${q.p} Poin`;
+                square.dataset.index = index; // Simpan indeks soal
+                
+                square.addEventListener('click', handleSquareClick);
+                gameBoard.appendChild(square);
+            });
+        }
+
+        // 5. Fungsi saat Kotak Soal Diklik
+        function handleSquareClick(e) {
+            currentButton = e.target;
+            const questionIndex = parseInt(currentButton.dataset.index);
+            currentQuestion = gameState.boardQuestions[questionIndex];
+            
+            // Tampilkan data di modal
+            questionPoints.textContent = `Tantangan ${currentQuestion.p} Poin`;
+            questionText.textContent = currentQuestion.q;
+            
+            // Hapus pilihan jawaban lama
+            answerOptions.innerHTML = '';
+            
+            // Acak pilihan jawaban
+            const options = shuffle([...currentQuestion.o]);
+            
+            // Buat tombol pilihan jawaban baru
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = "option-button w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-4 px-5 rounded-lg border border-gray-300 shadow-sm";
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option, currentQuestion.a);
+                answerOptions.appendChild(button);
+            });
+            
+            // Tampilkan modal
+            questionModal.classList.add('flex');
+        }
+
+        // 6. Fungsi Mengecek Jawaban
+        function checkAnswer(selectedOption, correctAnswer) {
+            // Sembunyikan modal pertanyaan
+            questionModal.classList.remove('flex');
+            
+            const isCorrect = (selectedOption === correctAnswer);
+            const feedbackExplanationEl = document.getElementById('feedbackExplanation');
+            
+            if (isCorrect) {
+                // Jawaban Benar
+                correctSound.triggerAttackRelease("C5", "0.3s", Tone.now() + 0.1);
+                feedbackEmoji.textContent = '✅';
+                feedbackText.textContent = `Benar! +${currentQuestion.p} Poin`;
+                feedbackExplanationEl.textContent = currentQuestion.e; // Tampilkan penjelasan
+                
+                // Tambah skor & tandai kotak
+                if (gameState.currentTurn === 'X') {
+                    gameState.teamXScore += currentQuestion.p;
+                    currentButton.classList.add('answered-x');
+                    currentButton.textContent = 'X';
+                } else {
+                    gameState.teamOScore += currentQuestion.p;
+                    currentButton.classList.add('answered-o');
+                    currentButton.textContent = 'O';
+                }
+            } else {
+                // Jawaban Salah
+                wrongSound.triggerAttackRelease("0.2s", Tone.now() + 0.1);
+                feedbackEmoji.textContent = '❌';
+                feedbackText.textContent = `Salah!`;
+                // Tampilkan jawaban benar + penjelasan
+                feedbackExplanationEl.textContent = `Jawaban: ${currentQuestion.a}\n\n${currentQuestion.e}`;
+                
+                // Tandai kotak
+                currentButton.classList.add('answered-wrong');
+                currentButton.textContent = '❌';
+            }
+            
+            // Nonaktifkan tombol
+            currentButton.disabled = true;
+            
+            // Kurangi sisa pertanyaan
+            gameState.questionsRemaining--;
+            
+            // Update skor di papan
+            updateScoreboard();
+            
+            // Tampilkan modal feedback
+            feedbackModal.classList.add('flex');
+        }
+
+        // 7. Tombol 'Lanjut' di Modal Feedback
+        nextTurnButton.addEventListener('click', () => {
+            feedbackModal.classList.remove('flex');
+            document.getElementById('feedbackExplanation').textContent = ""; // Kosongkan penjelasan
+            
+            // Cek apakah permainan berakhir
+            if (gameState.questionsRemaining === 0) {
+                endGame();
+            } else {
+                // Ganti giliran
+                switchTurn();
+            }
+        });
+
+        // 8. Fungsi Update Papan Skor
+        function updateScoreboard() {
+            teamXScoreDisplay.textContent = gameState.teamXScore;
+            teamOScoreDisplay.textContent = gameState.teamOScore;
+            
+            // Update giliran
+            turnDisplay.textContent = (gameState.currentTurn === 'X') ? gameState.teamXName : gameState.teamOName;
+            
+            // PERBAIKAN: Hapus semua kelas warna sebelum menambahkan yang baru
+            // Ini memperbaiki bug di mana text-yellow-300 tidak pernah dihapus.
+            turnDisplay.classList.remove('text-yellow-300', 'text-red-300', 'text-blue-300');
+
+            if (gameState.currentTurn === 'X') {
+                turnDisplay.classList.add('text-red-300');
+            } else {
+                turnDisplay.classList.add('text-blue-300');
+            }
+        }
+        
+        // 9. Fungsi Ganti Giliran
+        function switchTurn() {
+            gameState.currentTurn = (gameState.currentTurn === 'X') ? 'O' : 'X';
+            updateScoreboard();
+        }
+
+        // 10. Fungsi Mengakhiri Permainan
+        function endGame() {
+            let winnerName = "";
+            if (gameState.teamXScore > gameState.teamOScore) {
+                winnerName = gameState.teamXName;
+            } else if (gameState.teamOScore > gameState.teamXScore) {
+                winnerName = gameState.teamOName;
+            } else {
+                winnerName = "Seri!";
+            }
+
+            if (winnerName !== "Seri!") {
+                turnDisplay.textContent = `${winnerName} Menang! 🎉`;
+                turnDisplay.classList.add('text-yellow-300');
+            } else {
+                turnDisplay.textContent = `Permainan Berakhir Seri!`;
+                turnDisplay.classList.add('text-gray-300');
+            }
+            
+            // Tembakkan Konfeti!
+            launchConfetti();
+
+            // Tawarkan main lagi setelah 5 detik
+            setTimeout(() => {
+                turnDisplay.innerHTML = '<button id="resetButton" class="bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg">Main Lagi?</button>';
+                document.getElementById('resetButton').onclick = resetGame;
+            }, 5000);
+        }
+
+        // 11. Fungsi Reset Permainan
+        function resetGame() {
+            gameScreen.classList.add('hidden');
+            setupScreen.classList.remove('hidden');
+            // Hentikan konfeti jika masih jalan
+            myConfetti.reset();
+        }
+
+        // 12. Fungsi Menembakkan Konfeti
+        function launchConfetti() {
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(() => {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                const particleCount = 50 * (timeLeft / duration);
+                myConfetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                myConfetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+        }
+
+    </script>
+</body>
+</html>
