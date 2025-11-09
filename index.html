@@ -1,0 +1,48 @@
+<!-- ... existing code ... -->
+    <script>
+        // =========================================================================
+        // !!! PENTING UNTUK GURU !!!
+        // Soal-soal di bawah ini TELAH DISESUAIKAN berdasarkan materi PDF
+        // (Kelainan Darah, Buta Warna, dan Pemuliaan Tumbuhan).
+        // `question`: Teks pertanyaan.
+        // `options`: Array berisi 4 pilihan jawaban.
+        // `correctIndex`: Index jawaban yang benar (0 untuk A, 1 for B, 2 untuk C, 3 untuk D)
+        // `points`: Skor untuk pertanyaan ini (5, 10, 15, atau 20).
+        // =========================================================================
+        const QUESTION_BANK = [
+            // --- Kategori 5 Poin (Mudah - Ingatan Dasar) ---
+            { question: "Kelainan genetik yang menyebabkan sel darah merah berbentuk seperti bulan sabit disebut...", options: ["Hemofilia", "Buta Warna", "Anemia Sel Sabit", "Thalassemia"], correctIndex: 2, points: 5 },
+            { question: "Penyakit keturunan yang menyebabkan darah sulit membeku disebut...", options: ["Anemia", "Leukemia", "Hemofilia", "Buta Warna"], correctIndex: 2, points: 5 },
+            { question: "Tes yang umum digunakan untuk mendeteksi buta warna parsial adalah...", options: ["Tes DNA", "Tes Ishihara", "Tes IQ", "Tes Rontgen"], correctIndex: 1, points: 5 },
+            { question: "Teknik persilangan untuk menggabungkan sifat-sifat terbaik dari dua tanaman disebut...", options: ["Mutasi", "Seleksi", "Hibridisasi", "Introduksi"], correctIndex: 2, points: 5 },
+            { question: "Tanaman hasil rekayasa genetika sering juga disebut sebagai organisme...", options: ["Mutan", "Hibrida", "Unggul", "Transgenik (GMO)"], correctIndex: 3, points: 5 },
+
+            // --- Kategori 10 Poin (Sedang - Pemahaman Konsep) ---
+            { question: "Pola pewarisan kelainan Anemia Sel Sabit adalah...", options: ["Autosom Dominan", "Autosom Resesif", "Terpaut Seks (X-linked)", "Terpaut Seks (Y-linked)"], correctIndex: 1, points: 10 },
+            { question: "Hemofilia dan Buta Warna lebih banyak diderita oleh pria karena polanya...", options: ["Autosom Resesif", "Terpaut Kromosom X (X-linked)", "Selalu diwariskan dari Ayah", "Autosom Dominan"], correctIndex: 1, points: 10 },
+            { question: "Teknik memindahkan varietas tanaman dari satu tempat ke tempat lain untuk dibudidayakan disebut...", options: ["Introduksi", "Seleksi Massa", "Hibridisasi", "Mutasi"], correctIndex: 0, points: 10 },
+            { question: "Tujuan utama dari semua kegiatan pemuliaan tumbuhan adalah untuk menghasilkan...", options: ["Tanaman yang langka", "Varietas unggul", "Tanaman yang mahal", "Pestisida alami"], correctIndex: 1, points: 10 },
+            { question: "Penggunaan radiasi atau zat kimia untuk sengaja menciptakan varietas baru pada tanaman disebut teknik...", options: ["Mutasi Buatan", "DNA Rekombinan", "Poliploidisasi", "Seleksi Alam"], correctIndex: 0, points: 10 },
+            { question: "Layanan yang membantu keluarga memahami risiko dan dampak kelainan genetik disebut...", options: ["Tes DNA", "Konseling Genetika", "Psikologi Klinis", "Tes Prenatal"], correctIndex: 1, points: 10 },
+            { question: "Seseorang yang tidak bisa membedakan warna sama sekali (hanya hitam-putih) disebut...", options: ["Buta Warna Parsial", "Buta Warna Total", "Hemofilia", "Carrier Buta Warna"], correctIndex: 1, points: 10 },
+
+            // --- Kategori 15 Poin (Sulit - Analisis) ---
+            { question: "Individu yang heterozigot (pembawa sifat) Anemia Sel Sabit ternyata memiliki keuntungan resisten terhadap penyakit...", options: ["TBC", "Malaria", "Demam Berdarah", "HIV"], correctIndex: 1, points: 15 },
+            { question: "Jika seorang wanita carrier hemofilia (XhX) menikah dengan pria normal (XY), berapa persen kemungkinan anak laki-lakinya menderita hemofilia?", options: ["0%", "25%", "50%", "100%"], correctIndex: 2, points: 15 },
+            { question: "Teknik menggandakan set kromosom (misal dari 2n menjadi 4n) untuk menghasilkan tanaman lebih besar disebut...", options: ["Mutasi Titik", "Poliploidisasi", "Hibridisasi", "Kloning"], correctIndex: 1, points: 15 },
+            { question: "Contoh tanaman transgenik terkenal yang disisipi gen untuk menghasilkan Vitamin A adalah...", options: ["Jagung BT", "Kapas Anti-Hama", "Beras Emas (Golden Rice)", "Semangka Tanpa Biji"], correctIndex: 2, points: 15 },
+            { question: "Jika seorang pria buta warna (XcbY) menikah dengan wanita normal homozigot (XX), bagaimana kondisi anak perempuannya?", options: ["Semua buta warna", "50% carrier", "Semua carrier (pembawa sifat)", "Semua normal (bukan carrier)"], correctIndex: 2, points: 15 },
+            { question: "Mengapa pria tidak pernah bisa menjadi 'carrier' (pembawa sifat) untuk kelainan X-linked resesif seperti hemofilia?", options: ["Karena pria lebih kuat", "Karena pria hanya punya satu kromosom X", "Karena kelainan itu hanya dari ibu", "Karena kromosom Y melindungi"], correctIndex: 1, points: 15 },
+            
+            // --- Kategori 20 Poin (Sangat Sulit - Sintesis) ---
+            { question: "Anemia Sel Sabit disebabkan oleh perubahan satu basa nitrogen pada gen, yang merupakan contoh dari...", options: ["Mutasi Kromosom", "Poliploidi", "Mutasi Titik (Gen)", "Hibridisasi"], correctIndex: 2, points: 20 },
+            { question: "Metode seleksi tanaman dimana biji dari tanaman-tanaman terbaik dicampur untuk penanaman berikutnya disebut...", options: ["Seleksi Individu", "Seleksi Massa", "Introduksi", "Kloning"], correctIndex: 1, points: 20 },
+            { question: "Tahapan dasar dalam rekayasa genetika untuk menghasilkan 'Beras Emas' menggunakan teknologi...", options: ["DNA Rekombinan", "Mutasi Radiasi", "Seleksi Hibrida", "Poliploidisasi"], correctIndex: 0, points: 20 },
+            { question: "Seseorang dengan genotip heterozigot untuk Anemia Sel Sabit (HbA HbS) menunjukkan... ", options: ["Pola dominan penuh", "Pola resesif penuh", "Resistensi malaria (Keuntungan Heterozigot)", "Buta warna total"], correctIndex: 2, points: 20 },
+            { question: "Seorang wanita normal (ayahnya buta warna) menikah dengan pria buta warna. Berapa persen kemungkinan anak perempuan mereka buta warna?", options: ["0%", "25%", "50%", "75%"], correctIndex: 2, points: 20 },
+            { question: "Apa perbedaan utama antara pemuliaan tradisional (Hibridisasi) dengan Rekayasa Genetika (GMO)?", options: ["GMO lebih alami", "Hibridisasi lebih cepat", "GMO memindahkan gen spesifik, Hibridisasi mencampur semua gen", "Hibridisasi menggunakan radiasi"], correctIndex: 2, points: 20 },
+            { question: "Manakah dari berikut ini yang merupakan fokus utama dari Konseling Genetika?", options: ["Memberi obat kelainan genetik", "Memaksa keluarga mengambil keputusan", "Memberi informasi risiko dan dampak psikologis", "Melakukan operasi pada gen"], correctIndex: 2, points: 20 }
+        ];
+
+        // --- Variabel Global Permainan ---
+<!-- ... existing code ... -->
